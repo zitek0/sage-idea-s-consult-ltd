@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>SAGE IDEA'S CONSULT LTD</title>
+  <title>Sage Idea's Consult Ltd</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
 
@@ -29,6 +29,7 @@
 
   <!-- Main CSS File -->
   <link href="css/main.css" rel="stylesheet">
+  <link href="css/contact.css " rel="stylesheet">
 
   <!-- =======================================================
   * Template Name: UpConstruction
@@ -117,43 +118,91 @@
             <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d48389.78314118045!2d-74.006138!3d40.710059!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a22a3bda30d%3A0xb89d1fe6bc499443!2sDowntown%20Conference%20Center!5e0!3m2!1sen!2sus!4v1676961268712!5m2!1sen!2sus" frameborder="0" style="border:0; width: 100%; height: 400px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>End Google Maps -->
 
-          <!-- <div class="col-lg-6">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
-              <div class="row gy-4">
 
-                <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
-                </div>
+          <!-- This is the contact form section -->
 
-                <div class="col-md-6 ">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-                </div>
 
-                <div class="col-md-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
-                </div>
+          
+          <div class="quote-head">
 
-                <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-                </div>
+          <!-- LEFT SECTION -->
+          <div class="left-section">
 
-                <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
+            <div class="header-container">
 
-                  <button type="submit">Send Message</button>
-                </div>
+              <h3 class="quote-message">
+                Let’s Bring Your Vision to Life.
+              </h3>
+
+              <div class="bar"></div>
+
+            </div>
+
+            <div class="texts">
+
+              <p class="first-text">
+                Have a project in mind or need more information? Get in touch with
+                our team to discuss your requirements and explore how we can help.
+              </p>
+
+              <p>
+                Tell us a little about what you’re looking for, and we’ll get back
+                to you with the information and guidance you need.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- RIGHT SECTION -->
+          <div class="right-section">
+
+            <div class="input-head">
+
+              <h3 class="get-quote-text">
+                GET A QUOTE
+              </h3>
+
+              <p class="text">
+                Ready to get started? Send us your details and a brief description
+                of your project. Our team will review your request and get back to
+                you shortly.
+              </p>
+
+            </div>
+
+
+            <form
+              class="quote-form"
+              id="quote-form"
+              action="https://formspree.io/f/moevjaza"
+              method="POST"
+            >
+
+              <div class="input-container">
+
+                <input type="text" name="name" placeholder="Name" required>
+
+                <input type="email" name="email" placeholder="Email" required>
+
+                <input type="tel" name="phone" placeholder="Phone">
+
+                <textarea name="message" autocomplete="off" placeholder="Message" required></textarea>
 
               </div>
+
+              <button type="submit">
+                Get a quote
+              </button>
+
+              <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+
             </form>
-          </div>End Contact Form -->
+
+          </div>
 
         </div>
-
-      </div>
-
-    </section><!-- /Contact Section -->
 
   </main>
 
@@ -254,6 +303,7 @@
 
   <!-- Main JS File -->
   <script src="js/main.js"></script>
+  <script src="js/contact.js"></script>
 
 </body>
 
