@@ -7,6 +7,7 @@
   function toggleScrolled() {
     const selectBody = document.querySelector('body');
     const selectHeader = document.querySelector('#header');
+    if (!selectBody || !selectHeader) return;
     if (!selectHeader.classList.contains('scroll-up-sticky') && !selectHeader.classList.contains('sticky-top') && !selectHeader.classList.contains('fixed-top')) return;
     window.scrollY > 100 ? selectBody.classList.add('scrolled') : selectBody.classList.remove('scrolled');
   }
@@ -21,10 +22,15 @@
 
   function mobileNavToogle() {
     document.querySelector('body').classList.toggle('mobile-nav-active');
-    mobileNavToggleBtn.classList.toggle('bi-list');
-    mobileNavToggleBtn.classList.toggle('bi-x');
+    if (mobileNavToggleBtn) {
+      mobileNavToggleBtn.classList.toggle('bi-list');
+      mobileNavToggleBtn.classList.toggle('bi-x');
+    }
   }
-  mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
+
+  if (mobileNavToggleBtn) {
+    mobileNavToggleBtn.addEventListener('click', mobileNavToogle);
+  }
 
   /**
    * Hide mobile nav on same-page/hash links
@@ -35,7 +41,6 @@
         mobileNavToogle();
       }
     });
-
   });
 
   /**
@@ -45,19 +50,35 @@
     navmenu.addEventListener('click', function(e) {
       e.preventDefault();
       this.parentNode.classList.toggle('active');
-      this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
+      if (this.parentNode.nextElementSibling) {
+        this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
+      }
       e.stopImmediatePropagation();
     });
   });
 
   /**
    * Preloader
+   * Hides as soon as the page structure is ready instead of waiting for
+   * every image/font/embed to finish downloading (the "load" event).
+   * A safety timeout guarantees it never blocks the page for long.
    */
   const preloader = document.querySelector('#preloader');
-  if (preloader) {
-    window.addEventListener('load', () => {
+
+  function hidePreloader() {
+    if (preloader && preloader.parentNode) {
       preloader.remove();
-    });
+    }
+  }
+
+  if (preloader) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', hidePreloader);
+    } else {
+      hidePreloader();
+    }
+    window.addEventListener('load', hidePreloader);
+    setTimeout(hidePreloader, 3000); // safety net
   }
 
   /**
@@ -70,13 +91,16 @@
       window.scrollY > 100 ? scrollTop.classList.add('active') : scrollTop.classList.remove('active');
     }
   }
-  scrollTop.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+
+  if (scrollTop) {
+    scrollTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
     });
-  });
+  }
 
   window.addEventListener('load', toggleScrollTop);
   document.addEventListener('scroll', toggleScrollTop);
@@ -85,6 +109,7 @@
    * Animation on scroll function and init
    */
   function aosInit() {
+    if (typeof AOS === 'undefined') return;
     AOS.init({
       duration: 600,
       easing: 'ease-in-out',
@@ -97,53 +122,71 @@
   /**
    * Initiate glightbox
    */
-  const glightbox = GLightbox({
-    selector: '.glightbox'
-  });
+  if (typeof GLightbox !== 'undefined') {
+    GLightbox({
+      selector: '.glightbox'
+    });
+  }
 
   /**
    * Init isotope layout and filters
    */
-  document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
-    let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
-    let filter = isotopeItem.getAttribute('data-default-filter') ?? '*';
-    let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
+  if (typeof Isotope !== 'undefined' && typeof imagesLoaded !== 'undefined') {
+    document.querySelectorAll('.isotope-layout').forEach(function(isotopeItem) {
+      const container = isotopeItem.querySelector('.isotope-container');
+      if (!container) return;
 
-    let initIsotope;
-    imagesLoaded(isotopeItem.querySelector('.isotope-container'), function() {
-      initIsotope = new Isotope(isotopeItem.querySelector('.isotope-container'), {
-        itemSelector: '.isotope-item',
-        layoutMode: layout,
-        filter: filter,
-        sortBy: sort
+      let layout = isotopeItem.getAttribute('data-layout') ?? 'masonry';
+      let filter = isotopeItem.getAttribute('data-default-filter') ?? '*';
+      let sort = isotopeItem.getAttribute('data-sort') ?? 'original-order';
+
+      let initIsotope;
+      imagesLoaded(container, function() {
+        initIsotope = new Isotope(container, {
+          itemSelector: '.isotope-item',
+          layoutMode: layout,
+          filter: filter,
+          sortBy: sort
+        });
+      });
+
+      isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
+        filters.addEventListener('click', function() {
+          const active = isotopeItem.querySelector('.isotope-filters .filter-active');
+          if (active) active.classList.remove('filter-active');
+          this.classList.add('filter-active');
+          if (initIsotope) {
+            initIsotope.arrange({
+              filter: this.getAttribute('data-filter')
+            });
+          }
+          if (typeof aosInit === 'function') {
+            aosInit();
+          }
+        }, false);
       });
     });
-
-    isotopeItem.querySelectorAll('.isotope-filters li').forEach(function(filters) {
-      filters.addEventListener('click', function() {
-        isotopeItem.querySelector('.isotope-filters .filter-active').classList.remove('filter-active');
-        this.classList.add('filter-active');
-        initIsotope.arrange({
-          filter: this.getAttribute('data-filter')
-        });
-        if (typeof aosInit === 'function') {
-          aosInit();
-        }
-      }, false);
-    });
-
-  });
+  }
 
   /**
    * Init swiper sliders
    */
   function initSwiper() {
-    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
-      let config = JSON.parse(
-        swiperElement.querySelector(".swiper-config").innerHTML.trim()
-      );
+    if (typeof Swiper === 'undefined') return;
 
-      if (swiperElement.classList.contains("swiper-tab")) {
+    document.querySelectorAll(".init-swiper").forEach(function(swiperElement) {
+      const configEl = swiperElement.querySelector(".swiper-config");
+      if (!configEl) return;
+
+      let config;
+      try {
+        config = JSON.parse(configEl.innerHTML.trim());
+      } catch (err) {
+        console.error('Invalid swiper config:', err);
+        return;
+      }
+
+      if (swiperElement.classList.contains("swiper-tab") && typeof initSwiperWithCustomPagination === 'function') {
         initSwiperWithCustomPagination(swiperElement, config);
       } else {
         new Swiper(swiperElement, config);
@@ -156,6 +199,8 @@
   /**
    * Initiate Pure Counter
    */
-  new PureCounter();
+  if (typeof PureCounter !== 'undefined') {
+    new PureCounter();
+  }
 
 })();
